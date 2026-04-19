@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# React + Zoho Inventory API Example
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React">
+  <img src="https://img.shields.io/badge/Zoho_Inventory-API_v1-red" alt="Zoho">
+  <img src="https://img.shields.io/badge/OAuth2-token_refresh-orange" alt="OAuth2">
+  <img src="https://img.shields.io/badge/axios-HTTP_client-purple" alt="axios">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+</p>
 
-## Available Scripts
+A minimal React app demonstrating how to **integrate with the Zoho Inventory REST API** — covering OAuth2 token refresh, items, sales orders, invoices, contacts, and organizations.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🔌 API Operations Covered
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| Resource | Operations |
+|----------|-----------|
+| **Auth** | Refresh OAuth2 access token via refresh token |
+| **Items** | Get items, Create item |
+| **Sales Orders** | Get orders, Create order |
+| **Invoices** | Get invoices, Create invoice, Mark as sent |
+| **Contacts** | Get contacts, Create contact, Send email statement |
+| **Organizations** | Get organizations |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🏗️ How It Works
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```mermaid
+sequenceDiagram
+    participant App as React App
+    participant Zoho as Zoho Accounts API
+    participant Inv as Zoho Inventory API
 
-### `npm run build`
+    App->>Zoho: POST /oauth/v2/token (refresh_token)
+    Zoho->>App: access_token
+    App->>Inv: GET /items (Authorization: Zoho-oauthtoken ...)
+    Inv->>App: { items: [...] }
+    App->>Inv: POST /salesorders
+    Inv->>App: { salesorder: {...} }
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚀 Quick Start
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 1. Set up Zoho OAuth credentials
 
-### `npm run eject`
+In your [Zoho API Console](https://api-console.zoho.in/):
+- Create a Self Client
+- Scope: `ZohoInventory.FullAccess.all`
+- Generate a refresh token
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 2. Configure environment
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+cp .env.example .env
+# Fill in your credentials
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```env
+REACT_APP_CLIENT_ID=your_client_id
+REACT_APP_CLIENT_SECRET=your_client_secret
+REACT_APP_ORGANIZATION_ID=your_org_id
+REACT_APP_REFRESH_TOKEN=your_refresh_token
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 3. Run
 
-## Learn More
+```bash
+npm install
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> **Note:** The app uses [cors-anywhere](https://cors-anywhere.herokuapp.com/corsdemo) as a CORS proxy for local development. Visit that link and click "Request temporary access" before using the app.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 📁 Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+src/
+└── App.js      # All Zoho API calls — items, orders, invoices, contacts
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## ⚠️ Production Notes
 
-### Making a Progressive Web App
+- Do **not** expose `client_secret` or `refresh_token` in a production frontend — proxy requests through a backend server instead
+- Replace `cors-anywhere` with your own CORS proxy or a backend API route
+- Zoho India endpoint (`zoho.in`) — change to `zoho.com` / `zoho.eu` for other regions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 📄 License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT
